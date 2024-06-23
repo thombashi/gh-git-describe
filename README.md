@@ -2,6 +2,9 @@
 
 `gh` extension to execute `git describe` on a remote GitHub repository.
 
+[![CI](https://github.com/thombashi/gh-git-describe/actions/workflows/ci.yaml/badge.svg)](https://github.com/thombashi/gh-git-describe/actions/workflows/ci.yaml)
+[![CodeQL](https://github.com/thombashi/gh-git-describe/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/thombashi/gh-git-describe/actions/workflows/github-code-scanning/codeql)
+
 
 ## Installation
 

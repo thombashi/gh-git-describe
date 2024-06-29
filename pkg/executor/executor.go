@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"os"
@@ -29,6 +30,9 @@ type RepoCloneParams struct {
 type Executor interface {
 	// RunRepoClone clones the specified GitHub repository.
 	RunRepoClone(params *RepoCloneParams) (string, error)
+
+	// RunRepoCloneContext clones the specified GitHub repository with the specified context.
+	RunRepoCloneContext(ctx context.Context, params *RepoCloneParams) (string, error)
 
 	// RunGitDescribe runs the 'git describe' command for the specified GitHub repository.
 	RunGitDescribe(params *RepoCloneParams, args ...string) (string, error)
@@ -101,6 +105,11 @@ func New(params *Params) (Executor, error) {
 
 // RunRepoClone clones the specified GitHub repository.
 func (e executor) RunRepoClone(params *RepoCloneParams) (string, error) {
+	return e.RunRepoCloneContext(context.Background(), params)
+}
+
+// RunRepoCloneContext clones the specified GitHub repository with the specified context.
+func (e executor) RunRepoCloneContext(ctx context.Context, params *RepoCloneParams) (string, error) {
 	logger := e.logger.With(slog.String("repo", params.RepoID))
 	logger.Debug("cloning a repository")
 
@@ -145,7 +154,7 @@ func (e executor) RunRepoClone(params *RepoCloneParams) (string, error) {
 	}
 
 	repoID := fmt.Sprintf("%s/%s", repo.Owner, repo.Name)
-	_, _, err = gh.Exec("repo", "clone", repoID, tempDir, "--", "--bare")
+	_, _, err = gh.ExecContext(ctx, "repo", "clone", repoID, tempDir, "--", "--bare")
 	if err != nil {
 		return "", fmt.Errorf("failed to clone the repository: %w", err)
 	}

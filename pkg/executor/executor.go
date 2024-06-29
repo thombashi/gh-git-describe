@@ -122,7 +122,7 @@ func (e executor) RunRepoClone(params *RepoCloneParams) (string, error) {
 	if err != nil && !os.IsNotExist(err) {
 		return "", fmt.Errorf("failed to get the information of the directory: %w", err)
 	}
-	if !os.IsNotExist(err) {
+	if err == nil {
 		cacheTTL := e.cacheTTL
 		if params.CacheTTL > 0 {
 			cacheTTL = params.CacheTTL

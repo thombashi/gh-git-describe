@@ -2,6 +2,8 @@
 
 `gh` extension to execute `git describe` on a remote GitHub repository.
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/thombashi/gh-git-describe.svg)](https://pkg.go.dev/github.com/thombashi/gh-git-describe)
+[![Go Report Card](https://goreportcard.com/badge/github.com/thombashi/gh-git-describe)](https://goreportcard.com/report/github.com/thombashi/gh-git-describe)
 [![CI](https://github.com/thombashi/gh-git-describe/actions/workflows/ci.yaml/badge.svg)](https://github.com/thombashi/gh-git-describe/actions/workflows/ci.yaml)
 [![CodeQL](https://github.com/thombashi/gh-git-describe/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/thombashi/gh-git-describe/actions/workflows/github-code-scanning/codeql)
 

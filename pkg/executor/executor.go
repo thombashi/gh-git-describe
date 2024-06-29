@@ -36,6 +36,9 @@ type Executor interface {
 
 	// RunGitDescribe runs the 'git describe' command for the specified GitHub repository.
 	RunGitDescribe(params *RepoCloneParams, args ...string) (string, error)
+
+	// RunGitDescribe runs the 'git describe' command for the specified GitHub repository with the specified context.
+	RunGitDescribeContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error)
 }
 
 type executor struct {
@@ -174,7 +177,12 @@ func (e executor) RunRepoCloneContext(ctx context.Context, params *RepoClonePara
 
 // RunGitDescribe runs the 'git describe' command for the specified GitHub repository.
 func (e executor) RunGitDescribe(params *RepoCloneParams, args ...string) (string, error) {
-	clonedDir, err := e.RunRepoClone(params)
+	return e.RunGitDescribeContext(context.Background(), params, args...)
+}
+
+// RunGitDescribeContext runs the 'git describe' command for the specified GitHub repository with the specified context.
+func (e executor) RunGitDescribeContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error) {
+	clonedDir, err := e.RunRepoCloneContext(ctx, params)
 	if err != nil {
 		return "", fmt.Errorf("failed to clone the repository: %w", err)
 	}
@@ -184,7 +192,7 @@ func (e executor) RunGitDescribe(params *RepoCloneParams, args ...string) (strin
 
 	gitArgs := []string{"-C", clonedDir, "describe"}
 	gitArgs = append(gitArgs, args...)
-	result, err := e.gitExecutor.RunGit(gitArgs...)
+	result, err := e.gitExecutor.RunGitContext(ctx, gitArgs...)
 	if err != nil {
 		return "", fmt.Errorf("failed to run git: error=%w, stderr=%s", err, result.Stderr.String())
 	}

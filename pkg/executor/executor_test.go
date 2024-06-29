@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 func TestRunGitDescribe(t *testing.T) {
 	a := assert.New(t)
 	r := require.New(t)
+	ctx := context.Background()
 
 	gitExecutor, err := gitexec.New(&gitexec.Params{})
 	r.NoError(err)
@@ -37,11 +39,16 @@ func TestRunGitDescribe(t *testing.T) {
 	got, err = executor.RunGitDescribe(rcParams, "--tags", sha)
 	r.NoError(err)
 	a.Equal(want, got)
+
+	got, err = executor.RunGitDescribeContext(ctx, rcParams, "--tags", sha)
+	r.NoError(err)
+	a.Equal(want, got)
 }
 
 func TestRunGitDescribeInvalidSHA(t *testing.T) {
 	a := assert.New(t)
 	r := require.New(t)
+	ctx := context.Background()
 
 	gitExecutor, err := gitexec.New(&gitexec.Params{})
 	r.NoError(err)
@@ -60,4 +67,7 @@ func TestRunGitDescribeInvalidSHA(t *testing.T) {
 	}
 	_, err = executor.RunGitDescribe(rcParams, "--tags", sha)
 	a.Error(err)
+
+	_, err = executor.RunGitDescribeContext(ctx, rcParams, "--tags", sha)
+	r.Error(err)
 }

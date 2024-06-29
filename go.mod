@@ -8,7 +8,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.9.0
 	github.com/thombashi/eoe v0.0.2
-	github.com/thombashi/go-gitexec v0.0.1
+	github.com/thombashi/go-gitexec v0.0.2
 )
 
 require (

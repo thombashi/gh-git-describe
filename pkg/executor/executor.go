@@ -114,7 +114,6 @@ func (e executor) RunRepoClone(params *RepoCloneParams) (string, error) {
 // RunRepoCloneContext clones the specified GitHub repository with the specified context.
 func (e executor) RunRepoCloneContext(ctx context.Context, params *RepoCloneParams) (string, error) {
 	logger := e.logger.With(slog.String("repo", params.RepoID))
-	logger.Debug("cloning a repository")
 
 	if params.RepoID == "" {
 		return "", fmt.Errorf("repository ID must be specified")
@@ -125,7 +124,8 @@ func (e executor) RunRepoCloneContext(ctx context.Context, params *RepoClonePara
 		return "", fmt.Errorf("failed to parse the repository ID: %w", err)
 	}
 
-	outputDir := filepath.Join(e.cacheDirPath, extensionName, repo.Owner, repo.Name)
+	outputDir := filepath.Join(e.cacheDirPath, repo.Owner, repo.Name)
+	logger.Debug("cloning a repository", slog.String("path", outputDir))
 
 	// find the cache directory
 	plock.RLock(outputDir)

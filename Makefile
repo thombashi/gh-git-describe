@@ -56,3 +56,11 @@ tag:
 .PHONY: test
 test:
 	go test -v ./...
+
+.PHONY: test-run
+test-run: install
+	gh git-describe --log-level=debug da4fb9793585989a3d7723b4736ef157c632e2a2
+
+.PHONY: test-actions-checkout
+test-actions-checkout: install
+	gh git-describe --log-level=debug -R actions/checkout -- --tags a5ac7e51b41094c92402da3b24376905380afc29

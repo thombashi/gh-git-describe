@@ -19,7 +19,7 @@ $(TESTIFYILINT): $(BIN_DIR)
 
 .PHONY: build
 build:
-	go build -o $(EXTENSION_NAME) main.go
+	go build -o $(EXTENSION_NAME) .
 
 .PHONY: check
 check: $(STATICCHECK) $(TESTIFYILINT)

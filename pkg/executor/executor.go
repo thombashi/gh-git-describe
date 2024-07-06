@@ -48,6 +48,7 @@ type executor struct {
 	cacheTTL     time.Duration
 }
 
+// Params represents the parameters for the New function.
 type Params struct {
 	// GitExecutor is an instance of gitexec.GitExecutor
 	GitExecutor gitexec.GitExecutor
@@ -62,6 +63,7 @@ type Params struct {
 	CacheTTL time.Duration
 }
 
+// NewParams creates a new Params instance.
 func NewParams() *Params {
 	return &Params{
 		CacheTTL: 1 * time.Hour,

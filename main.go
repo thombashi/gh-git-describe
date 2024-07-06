@@ -7,21 +7,10 @@ import (
 	"time"
 
 	"github.com/phsym/console-slog"
-	"github.com/spf13/pflag"
 
 	"github.com/thombashi/eoe"
 	"github.com/thombashi/gh-git-describe/pkg/executor"
 	"github.com/thombashi/go-gitexec"
-)
-
-// const toolName = "gh-git-describe"
-
-// flag variables
-var (
-	logLevelStr  string
-	repoID       string
-	cacheDirPath string
-	noCache      bool
 )
 
 func newLogger(level slog.Level) *slog.Logger {
@@ -42,43 +31,8 @@ func getCacheTTL() time.Duration {
 	return 24 * time.Hour
 }
 
-func setFlags() error {
-	pflag.StringVarP(
-		&repoID,
-		"repo",
-		"R",
-		"",
-		"[required] GitHub repository ID",
-	)
-	pflag.StringVar(
-		&logLevelStr,
-		"log-level",
-		"info",
-		"log level (debug, info, warn, error)",
-	)
-	pflag.StringVar(
-		&cacheDirPath,
-		"cache-dir",
-		"",
-		"cache directory path. If not specified, use the system's temporary directory.",
-	)
-	pflag.BoolVar(
-		&noCache,
-		"no-cache",
-		false,
-		"disable cache",
-	)
-	pflag.Parse()
-
-	if repoID == "" {
-		return fmt.Errorf("--repo flag must be specified")
-	}
-
-	return nil
-}
-
 func main() {
-	err := setFlags()
+	args, err := setFlags()
 	eoe.ExitOnError(err, eoe.NewParams().WithMessage("failed to set flags"))
 
 	var logLevel slog.Level
@@ -105,7 +59,7 @@ func main() {
 
 	out, err := gdExecutor.RunGitDescribe(&executor.RepoCloneParams{
 		RepoID: repoID,
-	}, pflag.Args()...)
+	}, args...)
 	eoe.ExitOnError(err, eoeParams.WithMessage("failed to run git describe"))
 
 	fmt.Println(out)

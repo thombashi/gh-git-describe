@@ -157,6 +157,9 @@ func (e executor) RunRepoCloneContext(ctx context.Context, params *RepoClonePara
 		}
 	}
 
+	// reaching here means that the cache is not found or expired.
+	// clone the GitHub repository and replace the local cache directory.
+
 	tempDir, err := os.MkdirTemp("", extensionName)
 	if err != nil {
 		return "", fmt.Errorf("failed to create a temporary directory: %w", err)

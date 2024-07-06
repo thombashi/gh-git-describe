@@ -1,4 +1,4 @@
-VERSION := v0.0.1
+VERSION := v0.0.3
 
 EXTENSION_NAME := gh-git-describe
 EXTENSION := thombashi/$(EXTENSION_NAME)

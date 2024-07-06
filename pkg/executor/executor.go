@@ -17,9 +17,14 @@ import (
 
 const extensionName = "gh-git-describe"
 
+func toRepoID(repo repository.Repository) string {
+	return fmt.Sprintf("%s/%s", repo.Owner, repo.Name)
+}
+
 // RepoCloneParams represents the parameters for the RunRepoClone function.
 type RepoCloneParams struct {
 	// RepoID is the repository ID (OWNER/NAME) of the repository to clone.
+	// If not specified, the current repository is used.
 	RepoID string
 
 	// CacheTTL is the cache TTL duration.
@@ -126,16 +131,23 @@ func (e executor) RunRepoClone(params *RepoCloneParams) (string, error) {
 
 // RunRepoCloneContext clones the specified GitHub repository with the specified context.
 func (e executor) RunRepoCloneContext(ctx context.Context, params *RepoCloneParams) (string, error) {
-	logger := e.logger.With(slog.String("repo", params.RepoID))
+	var repo repository.Repository
+	var err error
 
 	if params.RepoID == "" {
-		return "", fmt.Errorf("repository ID must be specified")
+		repo, err = repository.Current()
+		if err != nil {
+			return "", fmt.Errorf("failed to get the current repository: %w", err)
+		}
+	} else {
+		repo, err = repository.Parse(params.RepoID)
+		if err != nil {
+			return "", fmt.Errorf("failed to parse the repository ID: %w", err)
+		}
 	}
 
-	repo, err := repository.Parse(params.RepoID)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse the repository ID: %w", err)
-	}
+	repoID := toRepoID(repo)
+	logger := e.logger.With(slog.String("repo", repoID))
 
 	outputDir := filepath.Join(e.cacheDirPath, repo.Owner, repo.Name)
 	logger.Debug("cloning a repository", slog.String("path", outputDir))
@@ -172,7 +184,6 @@ func (e executor) RunRepoCloneContext(ctx context.Context, params *RepoClonePara
 		return "", fmt.Errorf("failed to create the parent directory: %w", err)
 	}
 
-	repoID := fmt.Sprintf("%s/%s", repo.Owner, repo.Name)
 	_, _, err = gh.ExecContext(ctx, "repo", "clone", repoID, tempDir, "--", "--bare")
 	if err != nil {
 		return "", fmt.Errorf("failed to clone the repository: %w", err)

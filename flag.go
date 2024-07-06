@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/spf13/pflag"
 )
 
@@ -21,7 +19,7 @@ func setFlags() ([]string, error) {
 		"repo",
 		"R",
 		"",
-		"[required] GitHub repository ID",
+		"GitHub repository ID. If not specified, use the current repository.",
 	)
 	pflag.StringVar(
 		&flags.LogLevelStr,
@@ -42,10 +40,6 @@ func setFlags() ([]string, error) {
 		"disable cache",
 	)
 	pflag.Parse()
-
-	if flags.RepoID == "" {
-		return nil, fmt.Errorf("--repo flag must be specified")
-	}
 
 	return pflag.Args(), nil
 }

@@ -24,7 +24,7 @@ func newLogger(level slog.Level) *slog.Logger {
 }
 
 func getCacheTTL() time.Duration {
-	if noCache {
+	if flags.NoCache {
 		return 0
 	}
 
@@ -36,7 +36,7 @@ func main() {
 	eoe.ExitOnError(err, eoe.NewParams().WithMessage("failed to set flags"))
 
 	var logLevel slog.Level
-	err = logLevel.UnmarshalText([]byte(logLevelStr))
+	err = logLevel.UnmarshalText([]byte(flags.LogLevelStr))
 	eoe.ExitOnError(err, eoe.NewParams().WithMessage("failed to get a slog level"))
 
 	logger := newLogger(logLevel)
@@ -51,14 +51,14 @@ func main() {
 	params := &executor.Params{
 		GitExecutor:  gitExecutor,
 		Logger:       logger,
-		CacheDirPath: cacheDirPath,
+		CacheDirPath: flags.CacheDirPath,
 		CacheTTL:     getCacheTTL(),
 	}
 	gdExecutor, err := executor.New(params)
 	eoe.ExitOnError(err, eoeParams.WithMessage("failed to create a git instance"))
 
 	out, err := gdExecutor.RunGitDescribe(&executor.RepoCloneParams{
-		RepoID: repoID,
+		RepoID: flags.RepoID,
 	}, args...)
 	eoe.ExitOnError(err, eoeParams.WithMessage("failed to run git describe"))
 

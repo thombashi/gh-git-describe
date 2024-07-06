@@ -6,43 +6,44 @@ import (
 	"github.com/spf13/pflag"
 )
 
-// flag variables
-var (
-	logLevelStr  string
-	repoID       string
-	cacheDirPath string
-	noCache      bool
-)
+type Flags struct {
+	RepoID       string
+	LogLevelStr  string
+	CacheDirPath string
+	NoCache      bool
+}
+
+var flags = Flags{}
 
 func setFlags() ([]string, error) {
 	pflag.StringVarP(
-		&repoID,
+		&flags.RepoID,
 		"repo",
 		"R",
 		"",
 		"[required] GitHub repository ID",
 	)
 	pflag.StringVar(
-		&logLevelStr,
+		&flags.LogLevelStr,
 		"log-level",
 		"info",
 		"log level (debug, info, warn, error)",
 	)
 	pflag.StringVar(
-		&cacheDirPath,
+		&flags.CacheDirPath,
 		"cache-dir",
 		"",
 		"cache directory path. If not specified, use the system's temporary directory.",
 	)
 	pflag.BoolVar(
-		&noCache,
+		&flags.NoCache,
 		"no-cache",
 		false,
 		"disable cache",
 	)
 	pflag.Parse()
 
-	if repoID == "" {
+	if flags.RepoID == "" {
 		return nil, fmt.Errorf("--repo flag must be specified")
 	}
 

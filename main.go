@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/phsym/console-slog"
@@ -15,7 +14,7 @@ import (
 	"github.com/thombashi/go-gitexec"
 )
 
-const toolName = "gh-git-describe"
+// const toolName = "gh-git-describe"
 
 // flag variables
 var (
@@ -78,15 +77,6 @@ func setFlags() error {
 	return nil
 }
 
-func makeCacheDir() (string, error) {
-	dir := filepath.Join(os.TempDir(), toolName)
-	if err := os.MkdirAll(dir, 0755); err != nil {
-		return "", fmt.Errorf("failed to create a cache directory: %w", err)
-	}
-
-	return dir, nil
-}
-
 func main() {
 	err := setFlags()
 	eoe.ExitOnError(err, eoe.NewParams().WithMessage("failed to set flags"))
@@ -103,11 +93,6 @@ func main() {
 		Env:    os.Environ(),
 	})
 	eoe.ExitOnError(err, eoe.NewParams().WithMessage("failed to create a GitExecutor instance"))
-
-	if cacheDirPath == "" {
-		cacheDirPath, err = makeCacheDir()
-		eoe.ExitOnError(err, eoeParams.WithMessage("failed to create a cache directory"))
-	}
 
 	params := &executor.Params{
 		GitExecutor:  gitExecutor,

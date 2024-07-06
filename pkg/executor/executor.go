@@ -93,9 +93,20 @@ func New(params *Params) (Executor, error) {
 		logger = slog.Default()
 	}
 
-	cacheDirPath := os.TempDir()
-	if params.CacheDirPath != "" {
+	var cacheDirPath string
+	if params.CacheDirPath == "" {
+		userCacheDir, err := os.UserCacheDir()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get the user cache directory: %w", err)
+		}
+
+		cacheDirPath = filepath.Join(userCacheDir, extensionName)
+	} else {
 		cacheDirPath = params.CacheDirPath
+	}
+
+	if err := os.MkdirAll(cacheDirPath, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create a cache directory: %w", err)
 	}
 
 	return &executor{

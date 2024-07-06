@@ -46,7 +46,6 @@ func TestRunGitDescribe(t *testing.T) {
 }
 
 func TestRunGitDescribeInvalidSHA(t *testing.T) {
-	a := assert.New(t)
 	r := require.New(t)
 	ctx := context.Background()
 
@@ -66,7 +65,7 @@ func TestRunGitDescribeInvalidSHA(t *testing.T) {
 		CacheTTL: 300,
 	}
 	_, err = executor.RunGitDescribe(rcParams, "--tags", sha)
-	a.Error(err)
+	r.Error(err)
 
 	_, err = executor.RunGitDescribeContext(ctx, rcParams, "--tags", sha)
 	r.Error(err)

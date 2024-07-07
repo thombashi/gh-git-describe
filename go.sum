@@ -45,8 +45,6 @@ github.com/thlib/go-timezone-local v0.0.0-20210907160436-ef149e42d28e h1:Buzhfgf
 github.com/thlib/go-timezone-local v0.0.0-20210907160436-ef149e42d28e/go.mod h1:/Tnicc6m/lsJE0irFMA0LfIwTBo4QP7A8IfyIv4zZKI=
 github.com/thombashi/eoe v0.0.2 h1:1Y4D5SvtfOgfcmDue9PbV+dFJ/wwduV7ZZmSxDWvHLI=
 github.com/thombashi/eoe v0.0.2/go.mod h1:UKE+TT5f3HygPGD/6CqT9p40sczI79tnzZdh0kbIvMk=
-github.com/thombashi/go-gitexec v0.0.1 h1:UBtYex2tOeiC0e6ZgVpCtluWNVtiIHtm6QSSlAMcCqg=
-github.com/thombashi/go-gitexec v0.0.1/go.mod h1:kK+jHUMoMqiLIxhidgDAc4c0rHJ98zUBmPwLTP5e9l0=
 github.com/thombashi/go-gitexec v0.0.2 h1:VIsfYrar3nDbld3KUfyCCOIhMmSlw+XRD/wlv0kZnas=
 github.com/thombashi/go-gitexec v0.0.2/go.mod h1:kK+jHUMoMqiLIxhidgDAc4c0rHJ98zUBmPwLTP5e9l0=
 golang.org/x/sys v0.21.0 h1:rF+pYz3DAGSQAxAu1CbC7catZg4ebC4UIeIhKxBZvws=

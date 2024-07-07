@@ -70,7 +70,7 @@ type Executor interface {
 	// RunGitDescribe runs the 'git describe' command for the specified GitHub repository.
 	RunGitDescribe(params *RepoCloneParams, args ...string) (string, error)
 
-	// RunGitDescribe runs the 'git describe' command for the specified GitHub repository with the specified context.
+	// RunGitDescribeContext runs the 'git describe' command for the specified GitHub repository with the specified context.
 	RunGitDescribeContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error)
 }
 

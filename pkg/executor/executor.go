@@ -21,6 +21,28 @@ func toRepoID(repo repository.Repository) string {
 	return fmt.Sprintf("%s/%s", repo.Owner, repo.Name)
 }
 
+func makeCacheDir(cacheDirPath string) (string, error) {
+	cacheDirPath = strings.TrimSpace(cacheDirPath)
+
+	if cacheDirPath == "" {
+		userCacheDir, err := os.UserCacheDir()
+		if err != nil {
+			return "", fmt.Errorf("failed to get the user cache directory: %w", err)
+		}
+
+		cacheDirPath = filepath.Join(userCacheDir, extensionName)
+	} else {
+		cacheDirPath = filepath.Clean(cacheDirPath)
+		cacheDirPath = filepath.Join(cacheDirPath, extensionName)
+	}
+
+	if err := os.MkdirAll(cacheDirPath, 0755); err != nil {
+		return "", fmt.Errorf("failed to create a cache directory: %w", err)
+	}
+
+	return cacheDirPath, nil
+}
+
 // RepoCloneParams represents the parameters for the RunRepoClone function.
 type RepoCloneParams struct {
 	// RepoID is the repository ID (OWNER/NAME) of the repository to clone.
@@ -100,20 +122,9 @@ func New(params *Params) (Executor, error) {
 		logger = slog.Default()
 	}
 
-	var cacheDirPath string
-	if params.CacheDirPath == "" {
-		userCacheDir, err := os.UserCacheDir()
-		if err != nil {
-			return nil, fmt.Errorf("failed to get the user cache directory: %w", err)
-		}
-
-		cacheDirPath = filepath.Join(userCacheDir, extensionName)
-	} else {
-		cacheDirPath = params.CacheDirPath
-	}
-
-	if err := os.MkdirAll(cacheDirPath, 0755); err != nil {
-		return nil, fmt.Errorf("failed to create a cache directory: %w", err)
+	cacheDirPath, err := makeCacheDir(params.CacheDirPath)
+	if err != nil {
+		return nil, err
 	}
 
 	return &executor{

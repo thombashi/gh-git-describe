@@ -72,6 +72,12 @@ type Executor interface {
 
 	// RunGitDescribeContext runs the 'git describe' command for the specified GitHub repository with the specified context.
 	RunGitDescribeContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error)
+
+	// RunGitRevParse runs the 'git rev-parse' command for the specified GitHub repository.
+	RunGitRevParse(params *RepoCloneParams, args ...string) (string, error)
+
+	// RunGitRevParseContext runs the 'git rev-parse' command for the specified GitHub repository with the specified context.
+	RunGitRevParseContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error)
 }
 
 type executor struct {
@@ -267,3 +273,18 @@ func (e executor) RunGitDescribeContext(ctx context.Context, params *RepoClonePa
 	return stdout, nil
 }
 
+// RunGitRevParse runs the 'git rev-parse' command for the specified GitHub repository.
+func (e executor) RunGitRevParse(params *RepoCloneParams, args ...string) (string, error) {
+	return e.RunGitRevParseContext(context.Background(), params, args...)
+}
+
+// RunGitRevParseContext runs the 'git rev-parse' command for the specified GitHub repository with the specified context.
+func (e executor) RunGitRevParseContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error) {
+	subcommand := "rev-parse"
+	stdout, err := e.RunGitContext(ctx, params, subcommand, args...)
+	if err != nil {
+		return "", fmt.Errorf("failed to run git-%s: %w", subcommand, err)
+	}
+
+	return stdout, nil
+}

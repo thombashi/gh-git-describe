@@ -21,7 +21,7 @@ func TestRunGitDescribe(t *testing.T) {
 
 	params := NewParams()
 	params.GitExecutor = gitExecutor
-	params.CacheTTL = 0 * time.Hour
+	params.CacheTTL = 60 * time.Second
 	executor, err := New(params)
 	r.NoError(err)
 
@@ -54,7 +54,7 @@ func TestRunGitDescribeInvalidSHA(t *testing.T) {
 
 	params := NewParams()
 	params.GitExecutor = gitExecutor
-	params.CacheTTL = 0 * time.Hour
+	params.CacheTTL = 60 * time.Second
 	executor, err := New(params)
 	r.NoError(err)
 
@@ -69,4 +69,34 @@ func TestRunGitDescribeInvalidSHA(t *testing.T) {
 
 	_, err = executor.RunGitDescribeContext(ctx, rcParams, "--tags", sha)
 	r.Error(err)
+}
+
+func TestRunGitRevParse(t *testing.T) {
+	a := assert.New(t)
+	r := require.New(t)
+	ctx := context.Background()
+
+	gitExecutor, err := gitexec.New(&gitexec.Params{})
+	r.NoError(err)
+
+	params := NewParams()
+	params.GitExecutor = gitExecutor
+	params.CacheTTL = 30 * time.Second
+	executor, err := New(params)
+	r.NoError(err)
+
+	want := "692973e3d937129bcbf40652eb9f2f61becf3332"
+	tag := "v4.1.7"
+
+	rcParams := &RepoCloneParams{
+		RepoID:   "actions/checkout",
+		CacheTTL: 300,
+	}
+	got, err := executor.RunGitRevParse(rcParams, tag)
+	r.NoError(err)
+	a.Equal(want, got)
+
+	got, err = executor.RunGitRevParseContext(ctx, rcParams, tag)
+	r.NoError(err)
+	a.Equal(want, got)
 }

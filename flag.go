@@ -11,9 +11,9 @@ type Flags struct {
 	NoCache      bool
 }
 
-var flags = Flags{}
+func setFlags() (*Flags, []string, error) {
+	var flags = Flags{}
 
-func setFlags() ([]string, error) {
 	pflag.StringVarP(
 		&flags.RepoID,
 		"repo",
@@ -41,5 +41,5 @@ func setFlags() ([]string, error) {
 	)
 	pflag.Parse()
 
-	return pflag.Args(), nil
+	return &flags, pflag.Args(), nil
 }

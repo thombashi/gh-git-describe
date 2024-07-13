@@ -36,7 +36,7 @@ func makeCacheDir(cacheDirPath string) (string, error) {
 		cacheDirPath = filepath.Join(cacheDirPath, extensionName)
 	}
 
-	if err := os.MkdirAll(cacheDirPath, 0755); err != nil {
+	if err := os.MkdirAll(cacheDirPath, 0750); err != nil {
 		return "", fmt.Errorf("failed to create a cache directory: %w", err)
 	}
 
@@ -203,7 +203,7 @@ func (e executor) RunRepoCloneContext(ctx context.Context, params *RepoClonePara
 	}
 	defer os.RemoveAll(tempDir)
 
-	if err := os.MkdirAll(filepath.Dir(outputDir), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputDir), 0750); err != nil {
 		return "", fmt.Errorf("failed to create the parent directory: %w", err)
 	}
 

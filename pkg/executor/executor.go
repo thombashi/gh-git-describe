@@ -16,6 +16,7 @@ import (
 )
 
 const extensionName = "gh-git-describe"
+const defaultCacheDirPerm = 0750
 
 func toRepoID(repo repository.Repository) string {
 	return fmt.Sprintf("%s/%s", repo.Owner, repo.Name)
@@ -65,6 +66,7 @@ type executor struct {
 	gitExecutor  gitexec.GitExecutor
 	logger       *slog.Logger
 	cacheDirPath string
+	cacheDirPerm os.FileMode
 	cacheTTL     time.Duration
 }
 
@@ -78,6 +80,10 @@ type Params struct {
 
 	// CacheDirPath is the directory path to store the cache.
 	CacheDirPath string
+
+	// CacheDirPerm is the permission for the cache directory.
+	// Default is 0750.
+	CacheDirPerm os.FileMode
 
 	// CacheTTL is the cache retention duration for the cloned repository.
 	CacheTTL time.Duration
@@ -115,15 +121,27 @@ func New(params *Params) (Executor, error) {
 		logger = slog.Default()
 	}
 
-	cacheDirPath, err := makeCacheDir(params.CacheDirPath)
+	cacheDirPerm := params.CacheDirPerm
+	if params.CacheDirPerm == 0 {
+		cacheDirPerm = defaultCacheDirPerm
+	}
+
+	cacheDirPath, err := makeCacheDir(params.CacheDirPath, cacheDirPerm)
 	if err != nil {
 		return nil, err
 	}
+
+	logger.Debug("root cache directory",
+		slog.String("path", cacheDirPath),
+		slog.String("perm", cacheDirPerm.String()),
+		slog.String("ttl", params.CacheTTL.String()),
+	)
 
 	return &executor{
 		gitExecutor:  gitExecutor,
 		logger:       logger,
 		cacheDirPath: cacheDirPath,
+		cacheDirPerm: cacheDirPerm,
 		cacheTTL:     params.CacheTTL,
 	}, nil
 }
@@ -189,7 +207,7 @@ func (e executor) RunRepoCloneContext(ctx context.Context, params *RepoClonePara
 	}
 	defer os.RemoveAll(tempDir)
 
-	if err := os.MkdirAll(filepath.Dir(outputDir), 0750); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputDir), e.cacheDirPerm); err != nil {
 		return "", fmt.Errorf("failed to create the parent directory: %w", err)
 	}
 

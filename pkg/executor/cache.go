@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func makeCacheDir(cacheDirPath string) (string, error) {
+func makeCacheDir(cacheDirPath string, dirPerm os.FileMode) (string, error) {
 	cacheDirPath = strings.TrimSpace(cacheDirPath)
 
 	if cacheDirPath == "" {
@@ -22,7 +22,7 @@ func makeCacheDir(cacheDirPath string) (string, error) {
 		cacheDirPath = filepath.Join(cacheDirPath, extensionName)
 	}
 
-	if err := os.MkdirAll(cacheDirPath, 0750); err != nil {
+	if err := os.MkdirAll(cacheDirPath, dirPerm); err != nil {
 		return "", fmt.Errorf("failed to create a cache directory: %w", err)
 	}
 

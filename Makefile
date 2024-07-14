@@ -40,6 +40,10 @@ fmt: $(TESTIFYILINT)
 uninstall:
 	-gh extension remove $(EXTENSION)
 
+.PHONY: help
+help: build
+	./$(EXTENSION_NAME) --help
+
 .PHONY: install
 install: build uninstall
 	gh extension install .

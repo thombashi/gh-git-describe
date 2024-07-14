@@ -44,3 +44,23 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: make test
+
+  Run:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref_name }}-run
+      cancel-in-progress: true
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and Install
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make install
+
+      - name: Run tests
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make test-run

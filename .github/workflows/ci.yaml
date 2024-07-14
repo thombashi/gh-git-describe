@@ -25,10 +25,10 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: make install
 
-  Tests:
+  UnitTest:
     runs-on: ubuntu-latest
     concurrency:
-      group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref_name }}-tests
+      group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref_name }}-ut
       cancel-in-progress: true
     timeout-minutes: 20
 
@@ -38,9 +38,7 @@ jobs:
       - name: Build and Install
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          make uninstall
-          make install
+        run: make install
 
       - name: Run tests
         env:

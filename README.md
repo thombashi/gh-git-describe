@@ -30,7 +30,7 @@ gh extension upgrade git-describe
       --cache-dir string   cache directory path. If not specified, use the system's temporary directory.
       --log-level string   log level (debug, info, warn, error) (default "info")
       --no-cache           disable cache
-  -R, --repo string        [required] GitHub repository ID
+  -R, --repo string        GitHub repository ID. If not specified, use the current repository.
 ```
 
 ### Examples

@@ -23,9 +23,7 @@ jobs:
     - name: Build and Install
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        make uninstall
-        make install
+      run: make install
 
   Tests:
     runs-on: ubuntu-latest

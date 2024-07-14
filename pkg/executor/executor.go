@@ -33,6 +33,9 @@ type RepoCloneParams struct {
 
 // Executor is an interface for the command executors.
 type Executor interface {
+	// GetLogger returns the logger instance.
+	GetLogger() *slog.Logger
+
 	// RunRepoClone clones the specified GitHub repository.
 	RunRepoClone(params *RepoCloneParams) (string, error)
 
@@ -123,6 +126,11 @@ func New(params *Params) (Executor, error) {
 		cacheDirPath: cacheDirPath,
 		cacheTTL:     params.CacheTTL,
 	}, nil
+}
+
+// GetLogger returns the logger instance.
+func (e executor) GetLogger() *slog.Logger {
+	return e.logger
 }
 
 // RunRepoClone clones the specified GitHub repository.

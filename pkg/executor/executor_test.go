@@ -25,8 +25,10 @@ func TestRunGitDescribe(t *testing.T) {
 	executor, err := New(params)
 	r.NoError(err)
 
-	want := "v4"
-	sha := "692973e3d937129bcbf40652eb9f2f61becf3332"
+	const (
+		want = "v4.1.7"
+		sha  = "692973e3d937129bcbf40652eb9f2f61becf3332"
+	)
 
 	rcParams := &RepoCloneParams{
 		RepoID:   "actions/checkout",

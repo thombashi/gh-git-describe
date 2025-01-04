@@ -11,34 +11,45 @@ permissions:
 
 jobs:
   Build:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     concurrency:
-      group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref_name }}-build
-      cancel-in-progress: true
-    timeout-minutes: 20
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Build and Install
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: make install
-
-  UnitTest:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref_name }}-ut
+      group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.os }}-build
       cancel-in-progress: true
     timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
       - name: Build and Install
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: make install
+
+  UnitTest:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    concurrency:
+      group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.os }}-ut
+      cancel-in-progress: true
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
 
       - name: Run tests
         env:

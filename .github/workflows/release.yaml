@@ -16,5 +16,4 @@ jobs:
 
       - uses: cli/gh-extension-precompile@v2
         with:
-          # cannot use version 1.22 until the issue https://github.com/cli/gh-extension-precompile/issues/50 is resolved.
-          go_version: "1.21"
+          go_version_file: go.mod

@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -132,9 +133,18 @@ func New(params *Params) (Executor, error) {
 		logger = logger.With(slog.String("package", "gh-taghash/pkg/executor"))
 	}
 
-	cacheDirPath, err := makeCacheDir(params.CacheDirPath, cacheDirPerm)
-	if err != nil {
-		return nil, err
+	var cacheDirPath string
+	if runtime.GOOS == "windows" && os.Getenv("GITHUB_ACTIONS") == "true" {
+		// avoiding permission errors when running on Windows GitHub Actions runner
+		cacheDirPath, err = os.MkdirTemp("", extensionName)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create a temporary directory: %w", err)
+		}
+	} else {
+		cacheDirPath, err = makeCacheDir(params.CacheDirPath, cacheDirPerm)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	logger.Debug("root cache directory",

@@ -87,6 +87,9 @@ type Params struct {
 
 	// CacheTTL is the cache retention duration for the cloned repository.
 	CacheTTL time.Duration
+
+	// LogWithPackage is a flag to add module information to the log.
+	LogWithPackage bool
 }
 
 // NewParams creates a new Params instance.
@@ -124,6 +127,9 @@ func New(params *Params) (Executor, error) {
 	cacheDirPerm := params.CacheDirPerm
 	if params.CacheDirPerm == 0 {
 		cacheDirPerm = defaultCacheDirPerm
+	}
+	if params.LogWithPackage {
+		logger = logger.With(slog.String("package", "gh-taghash/pkg/executor"))
 	}
 
 	cacheDirPath, err := makeCacheDir(params.CacheDirPath, cacheDirPerm)

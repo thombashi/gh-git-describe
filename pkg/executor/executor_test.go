@@ -58,16 +58,16 @@ func TestRunGitDescribeInvalidSHA(t *testing.T) {
 	executor, err := New(params)
 	r.NoError(err)
 
-	sha := "0123456789abcdef0123456789abcdef01234567"
+	const invalidSHA = "0123456789abcdef0123456789abcdef01234567"
 
 	rcParams := &RepoCloneParams{
 		RepoID:   "actions/checkout",
 		CacheTTL: 300,
 	}
-	_, err = executor.RunGitDescribe(rcParams, "--tags", sha)
+	_, err = executor.RunGitDescribe(rcParams, "--tags", invalidSHA)
 	r.Error(err)
 
-	_, err = executor.RunGitDescribeContext(ctx, rcParams, "--tags", sha)
+	_, err = executor.RunGitDescribeContext(ctx, rcParams, "--tags", invalidSHA)
 	r.Error(err)
 }
 

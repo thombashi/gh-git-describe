@@ -61,6 +61,12 @@ type Executor interface {
 
 	// RunGitRevParseContext runs the 'git rev-parse' command for the specified GitHub repository with the specified context.
 	RunGitRevParseContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error)
+
+	// RunGitRevList runs the 'git rev-list' command for the specified GitHub repository.
+	RunGitRevList(params *RepoCloneParams, args ...string) (string, error)
+
+	// RunGitRevList runs the 'git rev-list' command for the specified GitHub repository with the specified context.
+	RunGitRevListContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error)
 }
 
 type executor struct {
@@ -302,6 +308,23 @@ func (e executor) RunGitRevParse(params *RepoCloneParams, args ...string) (strin
 // RunGitRevParseContext runs the 'git rev-parse' command for the specified GitHub repository with the specified context.
 func (e executor) RunGitRevParseContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error) {
 	const subcommand = "rev-parse"
+
+	stdout, err := e.RunGitContext(ctx, params, subcommand, args...)
+	if err != nil {
+		return "", fmt.Errorf("failed to run git-%s: %w", subcommand, err)
+	}
+
+	return stdout, nil
+}
+
+// RunGitRevList runs the 'git rev-list' command for the specified GitHub repository.
+func (e executor) RunGitRevList(params *RepoCloneParams, args ...string) (string, error) {
+	return e.RunGitRevListContext(context.Background(), params, args...)
+}
+
+// RunGitRevList runs the 'git rev-list' command for the specified GitHub repository with the specified context.
+func (e executor) RunGitRevListContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error) {
+	const subcommand = "rev-list"
 
 	stdout, err := e.RunGitContext(ctx, params, subcommand, args...)
 	if err != nil {

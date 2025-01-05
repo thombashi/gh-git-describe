@@ -102,3 +102,61 @@ func TestRunGitRevParse(t *testing.T) {
 	r.NoError(err)
 	a.Equal(want, got)
 }
+
+func TestRunGitRevList(t *testing.T) {
+	a := assert.New(t)
+	r := require.New(t)
+	ctx := context.Background()
+
+	gitExecutor, err := gitexec.New(&gitexec.Params{})
+	r.NoError(err)
+
+	params := NewParams()
+	params.GitExecutor = gitExecutor
+	params.CacheTTL = 30 * time.Second
+	executor, err := New(params)
+	r.NoError(err)
+
+	const (
+		want = "0b496e91ec7ae4428c3ed2eeb4c3a40df431f2cc"
+		tag  = "v1.1.0"
+	)
+
+	rcParams := &RepoCloneParams{
+		RepoID:   "actions/checkout",
+		CacheTTL: 300,
+	}
+	got, err := executor.RunGitRevList(rcParams, "-n", "1", tag)
+	r.NoError(err)
+	a.Equal(want, got)
+
+	got, err = executor.RunGitRevListContext(ctx, rcParams, "-n", "1", tag)
+	r.NoError(err)
+	a.Equal(want, got)
+}
+
+func TestRunGitRevListInvalidSHA(t *testing.T) {
+	r := require.New(t)
+	ctx := context.Background()
+
+	gitExecutor, err := gitexec.New(&gitexec.Params{})
+	r.NoError(err)
+
+	params := NewParams()
+	params.GitExecutor = gitExecutor
+	params.CacheTTL = 60 * time.Second
+	executor, err := New(params)
+	r.NoError(err)
+
+	const invalidSHA = "0123456789abcdef0123456789abcdef01234567"
+
+	rcParams := &RepoCloneParams{
+		RepoID:   "actions/checkout",
+		CacheTTL: 300,
+	}
+	_, err = executor.RunGitRevList(rcParams, invalidSHA)
+	r.Error(err)
+
+	_, err = executor.RunGitRevListContext(ctx, rcParams, invalidSHA)
+	r.Error(err)
+}

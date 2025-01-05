@@ -53,6 +53,7 @@ func main() {
 		Logger:       logger,
 		CacheDirPath: flags.CacheDirPath,
 		CacheTTL:     getCacheTTL(flags.NoCache),
+		LogWithPackage: true,
 	}
 	gdExecutor, err := executor.New(params)
 	eoe.ExitOnError(err, eoeParams.WithMessage("failed to create a git instance"))

@@ -284,7 +284,8 @@ func (e executor) RunGitDescribe(params *RepoCloneParams, args ...string) (strin
 
 // RunGitDescribeContext runs the 'git describe' command for the specified GitHub repository with the specified context.
 func (e executor) RunGitDescribeContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error) {
-	subcommand := "describe"
+	const subcommand = "describe"
+
 	stdout, err := e.RunGitContext(ctx, params, subcommand, args...)
 	if err != nil {
 		return "", fmt.Errorf("failed to run git-%s: %w", subcommand, err)
@@ -300,7 +301,8 @@ func (e executor) RunGitRevParse(params *RepoCloneParams, args ...string) (strin
 
 // RunGitRevParseContext runs the 'git rev-parse' command for the specified GitHub repository with the specified context.
 func (e executor) RunGitRevParseContext(ctx context.Context, params *RepoCloneParams, args ...string) (string, error) {
-	subcommand := "rev-parse"
+	const subcommand = "rev-parse"
+
 	stdout, err := e.RunGitContext(ctx, params, subcommand, args...)
 	if err != nil {
 		return "", fmt.Errorf("failed to run git-%s: %w", subcommand, err)

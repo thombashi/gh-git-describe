@@ -35,6 +35,6 @@ jobs:
 
       - run: |
           gh extension install thombashi/gh-git-describe
-          make test-run
+          gh git-describe --log-level=debug da4fb9793585989a3d7723b4736ef157c632e2a2
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

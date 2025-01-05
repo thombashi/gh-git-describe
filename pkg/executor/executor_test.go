@@ -87,8 +87,10 @@ func TestRunGitRevParse(t *testing.T) {
 	executor, err := New(params)
 	r.NoError(err)
 
-	want := "692973e3d937129bcbf40652eb9f2f61becf3332"
-	tag := "v4.1.7"
+	const (
+		want = "ec3afacf7f605c9fc12c70bc1c9e1708ddb99eca"
+		tag  = "v1.1.0"
+	)
 
 	rcParams := &RepoCloneParams{
 		RepoID:   "actions/checkout",

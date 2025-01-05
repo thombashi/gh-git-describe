@@ -49,10 +49,10 @@ func main() {
 	eoe.ExitOnError(err, eoe.NewParams().WithMessage("failed to create a GitExecutor instance"))
 
 	params := &executor.Params{
-		GitExecutor:  gitExecutor,
-		Logger:       logger,
-		CacheDirPath: flags.CacheDirPath,
-		CacheTTL:     getCacheTTL(flags.NoCache),
+		GitExecutor:    gitExecutor,
+		Logger:         logger,
+		CacheDirPath:   flags.CacheDirPath,
+		CacheTTL:       getCacheTTL(flags.NoCache),
 		LogWithPackage: true,
 	}
 	gdExecutor, err := executor.New(params)

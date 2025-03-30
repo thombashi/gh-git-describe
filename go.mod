@@ -1,6 +1,6 @@
 module github.com/thombashi/gh-git-describe
 
-go 1.23
+go 1.24
 
 require (
 	github.com/cli/go-gh/v2 v2.11.2

@@ -1,4 +1,4 @@
-VERSION := v0.2.1
+VERSION := v0.2.2
 
 EXTENSION_NAME := gh-git-describe
 EXTENSION := thombashi/$(EXTENSION_NAME)
@@ -70,6 +70,7 @@ tag:
 
 .PHONY: test
 test:
+	# go test -race -v ./...
 	go test -v ./...
 
 .PHONY: test-run

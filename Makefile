@@ -6,6 +6,16 @@ EXTENSION := thombashi/$(EXTENSION_NAME)
 BIN_DIR := $(shell pwd)/bin
 
 
+GOIMPORTS := $(BIN_DIR)/goimports
+$(GOIMPORTS):
+	mkdir -p $(BIN_DIR)
+	GOBIN=$(BIN_DIR) go install golang.org/x/tools/cmd/goimports@latest
+
+MODERNIZE := $(BIN_DIR)/modernize
+$(MODERNIZE):
+	mkdir -p $(BIN_DIR)
+	GOBIN=$(BIN_DIR) go install golang.org/x/tools/gopls/internal/analysis/modernize/cmd/modernize@latest
+
 STATICCHECK := $(BIN_DIR)/staticcheck
 $(STATICCHECK):
 	mkdir -p $(BIN_DIR)
@@ -31,9 +41,11 @@ clean:
 	rm -rf $(BIN_DIR) $(EXTENSION_NAME)
 
 .PHONY: fmt
-fmt: $(TESTIFYILINT)
+fmt: $(GOIMPORTS) $(TESTIFYILINT) $(MODERNIZE)
+	$(GOIMPORTS) -w .
 	gofmt -w -s .
 	$(TESTIFYILINT) -fix ./...
+	$(MODERNIZE) -fix ./...
 
 .PHONY: uninstall
 uninstall:
